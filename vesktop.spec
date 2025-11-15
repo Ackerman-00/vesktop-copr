@@ -13,9 +13,14 @@ Source1:        %{name}.desktop
 # Build dependencies
 BuildRequires:  desktop-file-utils
 
-# Runtime dependencies
+# Runtime dependencies - CORRECTED
 Requires:       libappindicator-gtk3
-Requires:       electron
+Requires:       gtk3
+Requires:       nss
+Requires:       libXScrnSaver
+Requires:       libXtst
+Requires:       xorg-x11-utils
+Requires:       alsa-lib
 
 %description
 Vesktop is an open-source, custom Discord client based on Electron, designed for
@@ -55,15 +60,10 @@ find %{buildroot}%{_datadir}/%{name} -name "*.png" -type f | head -1 | xargs -I 
 # Ensure the icon file exists (create empty if not found)
 test -f %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/vesktop.png || touch %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/vesktop.png
 
-# Install LICENSE file - FIXED: Use the actual license file from the tarball
-if [ -f LICENSE.electron.txt ]; then
-    install -m 644 LICENSE.electron.txt %{buildroot}%{_datadir}/licenses/%{name}/
-elif [ -f %{buildroot}%{_datadir}/%{name}/LICENSE.electron.txt ]; then
-    install -m 644 %{buildroot}%{_datadir}/%{name}/LICENSE.electron.txt %{buildroot}%{_datadir}/licenses/%{name}/
-else
-    # Create a minimal LICENSE file if none found
-    echo "GPL-3.0-only AND MIT - See https://github.com/Vencord/Vesktop for full license" > %{buildroot}%{_datadir}/licenses/%{name}/LICENSE
-fi
+# Install LICENSE file - use the actual license from the tarball
+install -m 644 LICENSE.electron.txt %{buildroot}%{_datadir}/licenses/%{name}/ 2>/dev/null || :
+# If the above fails, create a minimal LICENSE file
+test -f %{buildroot}%{_datadir}/licenses/%{name}/LICENSE.electron.txt || echo "GPL-3.0-only AND MIT - See https://github.com/Vencord/Vesktop for full license" > %{buildroot}%{_datadir}/licenses/%{name}/LICENSE
 
 # Validate the desktop file
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
@@ -83,3 +83,4 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 - Proper runtime dependencies
 - Disabled debug package to fix build
 - Fixed license file handling to use LICENSE.electron.txt
+- Removed electron dependency as it's included in the tarball
