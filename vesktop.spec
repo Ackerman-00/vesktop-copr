@@ -9,7 +9,6 @@ License:        GPL-3.0-only AND MIT
 URL:            https://github.com/Vencord/Vesktop
 
 # Source file details - Packit will figure out the exact download link for the release tag.
-# Note: The expected archive format is vesktop-{version}-linux-x64.tar.gz
 Source0:        %{name}-%{version}-linux-x64.tar.gz
 Source1:        %{name}.desktop
 
@@ -23,7 +22,7 @@ users who want enhanced features, better performance, and deep customization
 through the Vencord client mod.
 
 %prep
-# Unpacks Source0 (e.g., vesktop-1.13.6-linux-x64.tar.gz)
+# Unpacks Source0 (e.g., vesktop-1.6.1-linux-x64.tar.gz)
 %setup -q -n vesktop-linux-x64
 
 %build
@@ -46,7 +45,7 @@ ln -s %{_datadir}/%{name}/vesktop %{buildroot}%{_bindir}/%{name}
 install -m 644 %{SOURCE1} %{buildroot}%{_datadir}/applications/%{name}.desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
-# 4. Install the Icon (FIX: Removed 'resources/' path which caused the "No such file" error)
+# 4. Install the Icon (The path is fixed to `vesktop.png` directly in the installation root)
 install -m 644 %{buildroot}%{_datadir}/%{name}/vesktop.png %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/%{name}.png
 
 %files
