@@ -1,10 +1,14 @@
-upstream_project_url: https://github.com/Vencord/Vesktop
 specfile_path: vesktop.spec
-
 jobs:
   - job: copr_build
     trigger: release
     targets:
-      - fedora-42-x86_66
-      - fedora-rawhide-x86_64
+      - fedora-42-x86_64
       - fedora-43-x86_64
+      - fedora-rawhide-x86_64
+    owner: ackerman
+    project: vesktop
+  - job: propose_downstream
+    trigger: release
+    dist_git_branches:
+      - main

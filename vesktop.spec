@@ -2,16 +2,15 @@
 
 # Package metadata
 Name:           vesktop
-Version:        %__version__ 
+Version:        %__version__
 Release:        1%{?dist}
 Summary:        A custom Discord Client focusing on performance, features, and customizability.
 License:        GPL-3.0-only AND MIT
 URL:            https://github.com/Vencord/Vesktop
 
 # Source0 is now the official upstream RPM
-Source0:        %{name}-%{version}.x86_64.rpm
+Source0:        https://github.com/Vencord/Vesktop/releases/download/v%{version}/vesktop-%{version}.x86_64.rpm
 Source1:        %{name}.desktop
-
 # Dependencies
 # We don't need BuildRequires since we aren't compiling anything
 Requires:       libappindicator-gtk3
@@ -44,5 +43,10 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/*/*/*/%{name}.png
 
 %changelog
+* Sat Nov 15 2025 Quietcraft <mdzunaid384@gmail.com> - v1.6.1-1.20251116003339427319.main.3.g0e426db
+- Final corrected SPEC and Packit config (Quietcraft)
+- Switched to using official upstream RPM as Source0 (Quietcraft)
+- Final corrected SPEC and Packit config (Quietcraft)
+
 * Sat Nov 15 2024 Your Name <you@example.com> - %__version__-1
 - Switched to using official upstream RPM binary for package source.
