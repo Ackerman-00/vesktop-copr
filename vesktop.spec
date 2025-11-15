@@ -55,11 +55,11 @@ find %{buildroot}%{_datadir}/%{name} -name "*.png" -type f | head -1 | xargs -I 
 # Ensure the icon file exists (create empty if not found)
 test -f %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/vesktop.png || touch %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/vesktop.png
 
-# Install LICENSE file - robust handling
-if [ -f LICENSE ]; then
-    install -m 644 LICENSE %{buildroot}%{_datadir}/licenses/%{name}/
-elif [ -f %{buildroot}%{_datadir}/%{name}/LICENSE ]; then
-    install -m 644 %{buildroot}%{_datadir}/%{name}/LICENSE %{buildroot}%{_datadir}/licenses/%{name}/
+# Install LICENSE file - FIXED: Use the actual license file from the tarball
+if [ -f LICENSE.electron.txt ]; then
+    install -m 644 LICENSE.electron.txt %{buildroot}%{_datadir}/licenses/%{name}/
+elif [ -f %{buildroot}%{_datadir}/%{name}/LICENSE.electron.txt ]; then
+    install -m 644 %{buildroot}%{_datadir}/%{name}/LICENSE.electron.txt %{buildroot}%{_datadir}/licenses/%{name}/
 else
     # Create a minimal LICENSE file if none found
     echo "GPL-3.0-only AND MIT - See https://github.com/Vencord/Vesktop for full license" > %{buildroot}%{_datadir}/licenses/%{name}/LICENSE
@@ -82,4 +82,4 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 - Robust file handling for icons and licenses
 - Proper runtime dependencies
 - Disabled debug package to fix build
-- Fixed license file handling with fallback
+- Fixed license file handling to use LICENSE.electron.txt
