@@ -3,7 +3,6 @@ specfile_path: vesktop.spec
 upstream_package_name: vesktop
 downstream_package_name: vesktop
 
-
 sync_changelog: true
 
 jobs:
@@ -11,27 +10,13 @@ jobs:
     trigger: release
     targets:
       - fedora-rawhide-x86_64
-      - fedora-42-x86_64  
+      - fedora-42-x86_64
       - fedora-43-x86_64
-    owner: "@ackerman"
+    owner: "ackerman"
     project: vesktop
 
-
+  # Optional: Build on pull requests for testing
   - job: copr_build
     trigger: pull_request
     targets:
       - fedora-rawhide-x86_64
-
-# Actions to perform
-actions:
-  - action: fix-spec-file
-    event: pull_request
-
-  - action: sync-from-downstream
-    event: pull_request
-    
-notifications:
-  pull_request:
-    successful_build: true
-  release:
-    successful_build: true
