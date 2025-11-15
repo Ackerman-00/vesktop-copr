@@ -29,3 +29,9 @@ actions:
 
   - action: sync-from-downstream
     event: pull_request
+    
+notifications:
+  pull_request:
+    successful_build: true
+  release:
+    successful_build: true
