@@ -8,6 +8,10 @@ URL:            https://github.com/Vencord/Vesktop
 Source0:        https://github.com/Vencord/Vesktop/releases/download/v%{version}/vesktop-%{version}.tar.gz
 Source1:        %{name}.desktop
 
+# Build dependencies
+BuildRequires:  desktop-file-utils
+
+# Runtime dependencies
 Requires:       libappindicator-gtk3
 
 %description
@@ -56,6 +60,6 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 %changelog
 * Sat Nov 16 2024 Quietcraft <mdzunaid384@gmail.com> - 1.6.1-1
-- Initial package
-- Fixed macro recursion issues
+- Added desktop-file-utils build dependency
+- Fixed desktop file validation
 - Proper tarball handling
