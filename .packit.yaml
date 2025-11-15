@@ -12,7 +12,6 @@ jobs:
       - fedora-43-x86_64
     owner: ackerman
     project: vesktop
-    specfile_path: vesktop.spec
   - job: propose_downstream
     trigger: release
     dist_git_branches:
