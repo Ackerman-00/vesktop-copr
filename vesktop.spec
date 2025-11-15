@@ -1,3 +1,6 @@
+# vesktop.spec - RPM Passthrough Method
+
+# Package metadata
 Name:           vesktop
 Version:        %__version__ 
 Release:        1%{?dist}
@@ -5,13 +8,12 @@ Summary:        A custom Discord Client focusing on performance, features, and c
 License:        GPL-3.0-only AND MIT
 URL:            https://github.com/Vencord/Vesktop
 
-
-
-Source0:        %{name}-%{version}-linux-x64.tar.gz
+# Source0 is now the official upstream RPM
+Source0:        %{name}-%{version}.x86_64.rpm
 Source1:        %{name}.desktop
 
 # Dependencies
-BuildRequires:  desktop-file-utils
+# We don't need BuildRequires since we aren't compiling anything
 Requires:       libappindicator-gtk3
 
 %description
@@ -20,38 +22,27 @@ users who want enhanced features, better performance, and deep customization
 through the Vencord client mod.
 
 %prep
-%setup -q -n vesktop-linux-x64
+# No need to unpack, the RPM is our source
 
 %build
-
+# Nothing to build
 
 %install
-# Create directories
-mkdir -p %{buildroot}%{_bindir}
-mkdir -p %{buildroot}%{_datadir}/%{name}
-mkdir -p %{buildroot}%{_datadir}/applications
-mkdir -p %{buildroot}%{_datadir}/icons/hicolor/512x512/apps
+# Unpack the contents of the upstream RPM into our build root
+/usr/bin/rpm2cpio %{SOURCE0} | cpio -idmv -D %{buildroot}
 
-# 1. Install the main application files
-mv * %{buildroot}%{_datadir}/%{name}/
-
-# 2. Create a symlink to the main executable
-ln -s %{_datadir}/%{name}/vesktop %{buildroot}%{_bindir}/%{name}
-
-# 3. Install the Desktop file (Source1)
+# Install the custom desktop file (Source1) for full integration
 install -m 644 %{SOURCE1} %{buildroot}%{_datadir}/applications/%{name}.desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
-# 4. Install the Icon
-install -m 644 %{buildroot}%{_datadir}/%{name}/vesktop.png %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/%{name}.png
-
 %files
-%license LICENSE
-%{_bindir}/%{name}
+%license /usr/share/vesktop/LICENSE
+# Automatically grab all files from the unpacked RPM
+%{_bindir}/*
 %{_datadir}/%{name}/*
 %{_datadir}/applications/%{name}.desktop
-%{_datadir}/icons/hicolor/512x512/apps/%{name}.png
+%{_datadir}/icons/*/*/*/%{name}.png
 
 %changelog
 * Sat Nov 15 2024 Your Name <you@example.com> - %__version__-1
-- Initial COPR package build using Packit.
+- Switched to using official upstream RPM binary for package source.
