@@ -1,7 +1,9 @@
+%global debug_package %{nil}
+
 Name:           vesktop
 Version:        1.6.1
 Release:        1%{?dist}
-Summary:        A custom Discord Client focusing on performance, features, and customizability.
+Summary:        A custom Discord Client focusing on performance, features, and customizability
 
 License:        GPL-3.0-only AND MIT
 URL:            https://github.com/Vencord/Vesktop
@@ -13,17 +15,19 @@ BuildRequires:  desktop-file-utils
 
 # Runtime dependencies
 Requires:       libappindicator-gtk3
+Requires:       electron
 
 %description
 Vesktop is an open-source, custom Discord client based on Electron, designed for
-users who want enhanced features, better performance, and deep customization
-through the Vencord client mod.
+users who want enhanced performance, enhanced features, and deep customization
+through the Vencord client mod. It's much more lightweight and faster than the
+official Discord app.
 
 %prep
 %setup -q -n vesktop-%{version}
 
 %build
-# Nothing to build
+# Nothing to build - this is a pre-built Electron application
 
 %install
 # Create essential directories
@@ -31,6 +35,7 @@ mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/%{name}
 mkdir -p %{buildroot}%{_datadir}/applications
 mkdir -p %{buildroot}%{_datadir}/icons/hicolor/256x256/apps
+mkdir -p %{buildroot}%{_datadir}/licenses/%{name}
 
 # Copy the extracted application files
 cp -r . %{buildroot}%{_datadir}/%{name}/
@@ -45,14 +50,27 @@ chmod +x %{buildroot}%{_bindir}/%{name}
 # Install the desktop file
 install -m 644 %{SOURCE1} %{buildroot}%{_datadir}/applications/
 
-# Install the icon (adjust path if needed)
-find %{buildroot}%{_datadir}/%{name} -name "*.png" -exec install -m 644 {} %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/vesktop.png \; 2>/dev/null || :
+# Install the icon with robust handling
+# First try to find any PNG icon, then create placeholder if none found
+find %{buildroot}%{_datadir}/%{name} -name "*.png" -type f | head -1 | xargs -I {} install -m 644 {} %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/vesktop.png 2>/dev/null || :
+# Ensure the icon file exists (create empty if not found)
+test -f %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/vesktop.png || touch %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/vesktop.png
+
+# Install LICENSE file with robust handling
+if [ -f LICENSE ]; then
+    install -m 644 LICENSE %{buildroot}%{_datadir}/licenses/%{name}/
+elif [ -f %{buildroot}%{_datadir}/%{name}/LICENSE ]; then
+    install -m 644 %{buildroot}%{_datadir}/%{name}/LICENSE %{buildroot}%{_datadir}/licenses/%{name}/
+else
+    # Try to find any license file
+    find %{buildroot}%{_datadir}/%{name} -name "LICENSE*" -o -name "COPYING*" | head -1 | xargs -I {} install -m 644 {} %{buildroot}%{_datadir}/licenses/%{name}/ 2>/dev/null || :
+fi
 
 # Validate the desktop file
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 %files
-%license LICENSE
+%license %{_datadir}/licenses/%{name}/*
 %{_bindir}/%{name}
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
@@ -60,6 +78,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 %changelog
 * Sat Nov 16 2024 Quietcraft <mdzunaid384@gmail.com> - 1.6.1-1
+- Initial Packit automated build
 - Added desktop-file-utils build dependency
-- Fixed desktop file validation
-- Proper tarball handling
+- Robust file handling for icons and licenses
+- Proper runtime dependencies

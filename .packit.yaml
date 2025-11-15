@@ -12,7 +12,4 @@ jobs:
       - fedora-43-x86_64
     owner: ackerman
     project: vesktop
-  - job: propose_downstream
-    trigger: release
-    dist_git_branches:
-      - main
+    preserve_project: True
