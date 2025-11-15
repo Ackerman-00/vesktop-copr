@@ -1,5 +1,5 @@
 Name:           vesktop
-Version:        %{version}
+Version:        1.6.1
 Release:        1%{?dist}
 Summary:        A custom Discord Client focusing on performance, features, and customizability.
 
@@ -16,11 +16,10 @@ users who want enhanced features, better performance, and deep customization
 through the Vencord client mod.
 
 %prep
-# Setup the build directory and extract the upstream tarball.
 %setup -q -n vesktop-%{version}
 
 %build
-# Nothing to build as we are packaging a pre-built Electron application.
+# Nothing to build
 
 %install
 # Create essential directories
@@ -29,7 +28,7 @@ mkdir -p %{buildroot}%{_datadir}/%{name}
 mkdir -p %{buildroot}%{_datadir}/applications
 mkdir -p %{buildroot}%{_datadir}/icons/hicolor/256x256/apps
 
-# Copy the extracted application files. Adjust if the tarball structure differs.
+# Copy the extracted application files
 cp -r . %{buildroot}%{_datadir}/%{name}/
 
 # Install the executable wrapper script
@@ -42,9 +41,8 @@ chmod +x %{buildroot}%{_bindir}/%{name}
 # Install the desktop file
 install -m 644 %{SOURCE1} %{buildroot}%{_datadir}/applications/
 
-# Install the icon (assuming it's included in the tarball)
-# If the icon has a different name or path, you MUST update this line.
-install -m 644 %{buildroot}%{_datadir}/%{name}/vesktop.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/ 2>/dev/null || :
+# Install the icon (adjust path if needed)
+find %{buildroot}%{_datadir}/%{name} -name "*.png" -exec install -m 644 {} %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/vesktop.png \; 2>/dev/null || :
 
 # Validate the desktop file
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
@@ -57,8 +55,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/256x256/apps/vesktop.png
 
 %changelog
-* Sat Nov 16 2024 Quietcraft <mdzunaid384@gmail.com> - %{version}-1
-- Fixed Source0 to use the correct tarball.
-- Rewrote %install section to properly handle tarball extraction.
-- Corrected file paths and added an executable wrapper.
-- Using %{version} macro for automatic version updates by Packit.
+* Sat Nov 16 2024 Quietcraft <mdzunaid384@gmail.com> - 1.6.1-1
+- Initial package
+- Fixed macro recursion issues
+- Proper tarball handling
