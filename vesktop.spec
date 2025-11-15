@@ -1,13 +1,13 @@
 %global debug_package %{nil}
 
 Name:           vesktop
-Version:        1.6.1
-Release:        1%{?dist}
+Version:        v1.6.1
+Release:        1.20251116021114698885.main.16.g53e19bf%{?dist}
 Summary:        A custom Discord Client focusing on performance, features, and customizability
 
 License:        GPL-3.0-only AND MIT
 URL:            https://github.com/Vencord/Vesktop
-Source0:        https://github.com/Vencord/Vesktop/releases/download/v%{version}/vesktop-%{version}.tar.gz
+Source0:        vesktop-v1.6.1.tar.gz
 Source1:        %{name}.desktop
 
 # Build dependencies
@@ -19,7 +19,6 @@ Requires:       gtk3
 Requires:       nss
 Requires:       libXScrnSaver
 Requires:       libXtst
-Requires:       xorg-x11-utils
 Requires:       alsa-lib
 
 %description
@@ -29,7 +28,7 @@ through the Vencord client mod. It's much more lightweight and faster than the
 official Discord app.
 
 %prep
-%setup -q -n vesktop-%{version}
+%setup -q -n vesktop-v1.6.1
 
 %build
 # Nothing to build - this is a pre-built Electron application
@@ -76,6 +75,24 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/256x256/apps/vesktop.png
 
 %changelog
+* Sat Nov 15 2025 Quietcraft <mdzunaid384@gmail.com> - v1.6.1-1.20251116021114698885.main.16.g53e19bf
+- Fix dependencies: remove electron, add proper system deps (Quietcraft)
+- Fix license file path to use LICENSE.electron.txt (Quietcraft)
+- Fix license file handling with fallback (Quietcraft)
+- Add Packit automation (Quietcraft)
+- Add Packit automation (Quietcraft)
+- Final fix: Use version macro for automation (Quietcraft)
+- Final fix: Use version macro for automation (Quietcraft)
+- Final fix: Use version macro for automation (Quietcraft)
+- Final fix: Use version macro for automation (Quietcraft)
+- Final fix: Use version macro for automation (Quietcraft)
+- Final fix: Use version macro for automation (Quietcraft)
+- Cleanup: Removed unnecessary temporary build artifacts (Quietcraft)
+- Final fix: Use version macro for automation (Quietcraft)
+- Final corrected SPEC and Packit config (Quietcraft)
+- Switched to using official upstream RPM as Source0 (Quietcraft)
+- Final corrected SPEC and Packit config (Quietcraft)
+
 * Sat Nov 16 2024 Quietcraft <mdzunaid384@gmail.com> - 1.6.1-1
 - Initial Packit automated build
 - Added desktop-file-utils build dependency
