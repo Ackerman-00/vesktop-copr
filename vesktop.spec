@@ -9,7 +9,7 @@ License:        GPL-3.0-only AND MIT
 URL:            https://github.com/Vencord/Vesktop
 
 # Source file details - Packit will figure out the exact download link for the release tag.
-Source0:        vesktop-copr-__version__.tar.gz
+Source0:        %{name}-%{version}-linux-x64.tar.gz
 Source1:        %{name}.desktop
 
 # Dependencies
