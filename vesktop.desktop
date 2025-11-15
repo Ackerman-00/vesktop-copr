@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Vesktop
+Comment=A custom Discord Client focusing on performance, features, and customizability.
+Exec=vesktop
+Terminal=false
+Type=Application
+Icon=vesktop
+Categories=Network;InstantMessaging;
+StartupWMClass=Vesktop
