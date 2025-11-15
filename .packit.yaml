@@ -1,15 +1,10 @@
-# .packit.yaml
-
-# Points to the official Vesktop repo, which is where Packit will watch for new releases.
 upstream_project_url: https://github.com/Vencord/Vesktop
+specfile_path: vesktop.spec
 
 jobs:
   - job: copr_build
-    trigger: release # THIS is the line that guarantees automatic building on every new tag.
+    trigger: release
     targets:
       - fedora-42-x86_64
       - fedora-rawhide-x86_64
       - fedora-43-x86_64
-specfile_path: vesktop.spec
-files:
-  - vesktop.desktop
