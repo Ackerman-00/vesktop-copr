@@ -1,6 +1,3 @@
-# vesktop.spec
-
-# Package metadata
 Name:           vesktop
 Version:        %__version__ 
 Release:        1%{?dist}
@@ -8,7 +5,8 @@ Summary:        A custom Discord Client focusing on performance, features, and c
 License:        GPL-3.0-only AND MIT
 URL:            https://github.com/Vencord/Vesktop
 
-# Source file details - Packit will figure out the exact download link for the release tag.
+
+
 Source0:        %{name}-%{version}-linux-x64.tar.gz
 Source1:        %{name}.desktop
 
@@ -22,11 +20,10 @@ users who want enhanced features, better performance, and deep customization
 through the Vencord client mod.
 
 %prep
-# Unpacks Source0 (e.g., vesktop-1.6.1-linux-x64.tar.gz)
 %setup -q -n vesktop-linux-x64
 
 %build
-# Nothing to build, we use the pre-built Electron binary.
+
 
 %install
 # Create directories
@@ -41,11 +38,11 @@ mv * %{buildroot}%{_datadir}/%{name}/
 # 2. Create a symlink to the main executable
 ln -s %{_datadir}/%{name}/vesktop %{buildroot}%{_bindir}/%{name}
 
-# 3. Install the Desktop file
+# 3. Install the Desktop file (Source1)
 install -m 644 %{SOURCE1} %{buildroot}%{_datadir}/applications/%{name}.desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
-# 4. Install the Icon (The path is fixed to `vesktop.png` directly in the installation root)
+# 4. Install the Icon
 install -m 644 %{buildroot}%{_datadir}/%{name}/vesktop.png %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/%{name}.png
 
 %files
@@ -56,5 +53,5 @@ install -m 644 %{buildroot}%{_datadir}/%{name}/vesktop.png %{buildroot}%{_datadi
 %{_datadir}/icons/hicolor/512x512/apps/%{name}.png
 
 %changelog
-* Sat Nov 16 2025 Your Name <you@example.com> - %__version__-1
+* Sat Nov 15 2024 Your Name <you@example.com> - %__version__-1
 - Initial COPR package build using Packit.
