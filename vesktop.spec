@@ -9,8 +9,8 @@ License:        GPL-3.0-only AND MIT
 URL:            https://github.com/Vencord/Vesktop
 
 # Prefer upstream tarball as Source0; fallback to binary RPM in Source1.
-Source0:        https://github.com/Vencord/Vesktop/releases/download/v%{version}/vesktop-%{version}.tar.gz
-Source1:        https://github.com/Vencord/Vesktop/releases/download/v%{version}/vesktop-%{version}.x86_64.rpm
+Source0:        https://github.com/Vencord/Vesktop/releases/download/%{version}/vesktop-%{version}.tar.gz
+Source1:        https://github.com/Vencord/Vesktop/releases/download/%{version}/vesktop-%{version}.x86_64.rpm
 Source2:        %{name}.desktop
 
 BuildArch:      x86_64
