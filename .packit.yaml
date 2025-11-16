@@ -5,13 +5,18 @@ downstream_package_name: vesktop
 
 sync_changelog: true
 
+# Ensure wget is available in the environment where hooks run
+srpm_build_deps:
+  - wget
+
 # Download the upstream tarball during Packit runs so the spec can repack it.
+# Use the hyphenated hook name `post-upstream-clone` (Packit expects hyphens).
 actions:
-  post_upstream_clone: |
+  post-upstream-clone: |
     VERSION=$(grep -m1 '^Version:' vesktop.spec | awk '{print $2}')
     echo "Detected version: $VERSION"
-    wget -O "vesktop-$VERSION.tar.gz" \
-      "https://github.com/Vencord/Vesktop/releases/download/v$VERSION/vesktop-$VERSION.tar.gz"
+    # download the official upstream tarball (GitHub release redirect)
+    wget -O "vesktop-$VERSION.tar.gz" "https://github.com/Vencord/Vesktop/releases/download/v$VERSION/vesktop-$VERSION.tar.gz"
     ls -lh
 
 jobs:
