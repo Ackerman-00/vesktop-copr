@@ -2,7 +2,7 @@
 %global debug_package %{nil}
 
 Name:           vesktop
-Version:        1.6.1
+Version:        %__version
 Release:        1%{?dist}
 Summary:        A custom Discord Client focusing on performance, features, and customizability
 License:        GPL-3.0-only AND MIT

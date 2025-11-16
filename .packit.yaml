@@ -1,5 +1,3 @@
-# .packit.yaml - FINAL CORRECTED STRUCTURE
-
 specfile_path: vesktop.spec
 
 upstream_package_name: vesktop
@@ -9,7 +7,12 @@ sync_changelog: true
 
 # The key is to nest all package-specific configuration under 'packages'
 packages:
-  vesktop: 
+  vesktop:
+    # --- ADD THIS BLOCK ---
+    spec_template:
+      # This ensures %__version gets set correctly from the Git tag/release name
+      __version: '%(echo $PACKIT_PROJECT_VERSION)'
+    # ----------------------
     actions:
       # Use the YAML literal block scalar (the pipe |) for the multi-line script.
       post_upstream_clone: |
@@ -24,7 +27,7 @@ packages:
 
 # srpm_build_deps must be at the top level, or under 'packages: vesktop' (I'm keeping it simple here)
 srpm_build_deps:
-  - wget 
+  - wget
 
 jobs:
   - job: copr_build
