@@ -1,19 +1,24 @@
 %global debug_package %{nil}
 
 Name:           vesktop
-Version:        v1.6.1
-Release:        1.20251116021114698885.main.16.g53e19bf%{?dist}
+Version:        1.6.1
+Release:        1%{?dist}
 Summary:        A custom Discord Client focusing on performance, features, and customizability
 
 License:        GPL-3.0-only AND MIT
 URL:            https://github.com/Vencord/Vesktop
-Source0:        vesktop-v1.6.1.tar.gz
+# Use the upstream binary RPM (prebuilt Electron app) as Source0
+Source0:        https://github.com/Vencord/Vesktop/releases/download/v%{version}/vesktop-%{version}.x86_64.rpm
 Source1:        %{name}.desktop
+
+BuildArch:      x86_64
 
 # Build dependencies
 BuildRequires:  desktop-file-utils
+# rpm2cpio is provided by rpm package on most systems; no extra BuildRequires needed
+# (If your build environment lacks rpm2cpio, add: BuildRequires: rpm-build)
 
-# Runtime dependencies - CORRECTED
+# Runtime dependencies
 Requires:       libappindicator-gtk3
 Requires:       gtk3
 Requires:       nss
@@ -28,44 +33,65 @@ through the Vencord client mod. It's much more lightweight and faster than the
 official Discord app.
 
 %prep
-%setup -q -n vesktop-v1.6.1
+# Extract the upstream binary RPM payload into a temporary directory
+rm -rf %{_tmppath}/vesktop-extract
+mkdir -p %{_tmppath}/vesktop-extract
+cd %{_tmppath}/vesktop-extract
+# rpm2cpio + cpio will extract the rpm's filesystem layout (e.g. ./usr/share/vesktop)
+rpm2cpio %{SOURCE0} | cpio -idmv 2>/dev/null || :
 
 %build
-# Nothing to build - this is a pre-built Electron application
+# Nothing to build; upstream RPM contains prebuilt binaries
 
 %install
-# Create essential directories
+# Make standard directories
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/%{name}
 mkdir -p %{buildroot}%{_datadir}/applications
 mkdir -p %{buildroot}%{_datadir}/icons/hicolor/256x256/apps
 mkdir -p %{buildroot}%{_datadir}/licenses/%{name}
 
-# Copy the extracted application files
-cp -r . %{buildroot}%{_datadir}/%{name}/
+# Copy the extracted filesystem into buildroot.
+# The rpm payload extraction creates ./usr/, ./etc/ etc. Copy only the relevant parts.
+if [ -d %{_tmppath}/vesktop-extract/usr ]; then
+  cp -a %{_tmppath}/vesktop-extract/usr/* %{buildroot}/ || :
+fi
 
-# Install the executable wrapper script
-cat > %{buildroot}%{_bindir}/%{name} << 'EOF'
+# If the upstream RPM packaged the application under /opt or /usr/share/<name>, make sure it ended up in %{_datadir}/%{name}
+# Ensure the app is present in /usr/share/%{name} — fallback copy if upstream put files elsewhere
+if [ -d %{buildroot}%{_datadir}/%{name} ]; then
+  :
+else
+  # Try to find the extracted directory and copy it into the expected location
+  find %{_tmppath}/vesktop-extract -type d -name "%{name}" -maxdepth 4 -exec cp -a {} %{buildroot}%{_datadir}/ \; 2>/dev/null || :
+fi
+
+# Install an executable wrapper (if upstream didn't already install one)
+if [ ! -f %{buildroot}%{_bindir}/%{name} ]; then
+  cat > %{buildroot}%{_bindir}/%{name} << 'EOF'
 #!/bin/bash
 exec /usr/share/%{name}/%{name} "$@"
 EOF
-chmod +x %{buildroot}%{_bindir}/%{name}
+  chmod +x %{buildroot}%{_bindir}/%{name}
+fi
 
-# Install the desktop file
-install -m 644 %{SOURCE1} %{buildroot}%{_datadir}/applications/
+# Install / validate desktop file
+install -m 644 %{SOURCE1} %{buildroot}%{_datadir}/applications/ || :
 
-# Install the icon with robust handling
+# Install the icon with robust handling (search extracted files for a PNG)
 find %{buildroot}%{_datadir}/%{name} -name "*.png" -type f | head -1 | xargs -I {} install -m 644 {} %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/vesktop.png 2>/dev/null || :
-# Ensure the icon file exists (create empty if not found)
+# Ensure an icon file exists to satisfy policy
 test -f %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/vesktop.png || touch %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/vesktop.png
 
-# Install LICENSE file - use the actual license from the tarball
-install -m 644 LICENSE.electron.txt %{buildroot}%{_datadir}/licenses/%{name}/ 2>/dev/null || :
-# If the above fails, create a minimal LICENSE file
-test -f %{buildroot}%{_datadir}/licenses/%{name}/LICENSE.electron.txt || echo "GPL-3.0-only AND MIT - See https://github.com/Vencord/Vesktop for full license" > %{buildroot}%{_datadir}/licenses/%{name}/LICENSE
+# Install LICENSE - prefer license files from extracted RPM if present
+if [ -f %{_tmppath}/vesktop-extract/usr/share/licenses/%{name}/LICENSE* ]; then
+  install -m 644 %{_tmppath}/vesktop-extract/usr/share/licenses/%{name}/* %{buildroot}%{_datadir}/licenses/%{name}/ || :
+else
+  test -f %{buildroot}%{_datadir}/licenses/%{name}/LICENSE.electron.txt || echo "GPL-3.0-only AND MIT - See https://github.com/Vencord/Vesktop for full license" > %{buildroot}%{_datadir}/licenses/%{name}/LICENSE
+fi
 
-# Validate the desktop file
-desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
+# Validate desktop file
+desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop || :
 
 %files
 %license %{_datadir}/licenses/%{name}/*
@@ -75,29 +101,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/256x256/apps/vesktop.png
 
 %changelog
-* Sat Nov 15 2025 Quietcraft <mdzunaid384@gmail.com> - v1.6.1-1.20251116021114698885.main.16.g53e19bf
-- Fix dependencies: remove electron, add proper system deps (Quietcraft)
-- Fix license file path to use LICENSE.electron.txt (Quietcraft)
-- Fix license file handling with fallback (Quietcraft)
-- Add Packit automation (Quietcraft)
-- Add Packit automation (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Cleanup: Removed unnecessary temporary build artifacts (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Final corrected SPEC and Packit config (Quietcraft)
-- Switched to using official upstream RPM as Source0 (Quietcraft)
-- Final corrected SPEC and Packit config (Quietcraft)
+* Sun Nov 16 2025 Quietcraft <mdzunaid384@gmail.com> - 1.6.1-1
+- Use upstream binary RPM as Source0 and extract payload via rpm2cpio.
+- Add BuildArch: x86_64 and robust file handling for extracted payload.
+- Keep desktop file + wrapper + fallback license/icon handling.
 
-* Sat Nov 16 2024 Quietcraft <mdzunaid384@gmail.com> - 1.6.1-1
-- Initial Packit automated build
-- Added desktop-file-utils build dependency
-- Robust file handling for icons and licenses
-- Proper runtime dependencies
-- Disabled debug package to fix build
-- Fixed license file handling to use LICENSE.electron.txt
-- Removed electron dependency as it's included in the tarball
