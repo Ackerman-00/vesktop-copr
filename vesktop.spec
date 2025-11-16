@@ -2,14 +2,14 @@
 %global debug_package %{nil}
 
 Name:           vesktop
-Version:        v1.6.1
-Release:        1.20251116113733949872.main.23.g89ac491%{?dist}
+Version:        1.6.1
+Release:        1%{?dist}
 Summary:        A custom Discord Client focusing on performance, features, and customizability
 License:        GPL-3.0-only AND MIT
 URL:            https://github.com/Vencord/Vesktop
 
 # Prefer upstream tarball as Source0; fallback to binary RPM in Source1.
-Source0:        vesktop-v1.6.1.tar.gz
+Source0:        https://github.com/Vencord/Vesktop/releases/download/v%{version}/vesktop-%{version}.tar.gz
 Source1:        https://github.com/Vencord/Vesktop/releases/download/v%{version}/vesktop-%{version}.x86_64.rpm
 Source2:        %{name}.desktop
 
@@ -138,31 +138,6 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop || ec
 %{_datadir}/icons/hicolor/256x256/apps/vesktop.png
 
 %changelog
-* Sun Nov 16 2025 Quietcraft <mdzunaid384@gmail.com> - v1.6.1-1.20251116113733949872.main.23.g89ac491
-- spec: final repackaging spec; packit: keep copr build jobs (Quietcraft)
-- Fix license file handling with fallback (Quietcraft)
-- Fix license file handling with fallback (Quietcraft)
-- Fix license file handling with fallback (Quietcraft)
-- Fix license file handling with fallback (Quietcraft)
-- Fix license file handling with fallback (Quietcraft)
-- Fix dependencies: remove electron, add proper system deps (Quietcraft)
-- Fix dependencies: remove electron, add proper system deps (Quietcraft)
-- Fix license file path to use LICENSE.electron.txt (Quietcraft)
-- Fix license file handling with fallback (Quietcraft)
-- Add Packit automation (Quietcraft)
-- Add Packit automation (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Cleanup: Removed unnecessary temporary build artifacts (Quietcraft)
-- Final fix: Use version macro for automation (Quietcraft)
-- Final corrected SPEC and Packit config (Quietcraft)
-- Switched to using official upstream RPM as Source0 (Quietcraft)
-- Final corrected SPEC and Packit config (Quietcraft)
-
 * Sun Nov 16 2025 Quietcraft <mdzunaid384@gmail.com> - 1.6.1-1
 - Repackage upstream artifacts: support tarball and binary RPM payloads.
 - Install app under /opt/Vesktop, provide /usr/bin/vesktop wrapper.
