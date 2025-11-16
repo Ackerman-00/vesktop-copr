@@ -14,7 +14,7 @@ actions:
     echo "Detected version: $VERSION"
 
     echo "Downloading tarball..."
-    wget -O "vesktop-$VERSION.tar.gz" \
+    wget -O vesktop-$VERSION.tar.gz \
       "https://github.com/Vencord/Vesktop/releases/download/v$VERSION/vesktop-$VERSION.tar.gz"
 
     echo "Contents:"
@@ -26,17 +26,14 @@ jobs:
     owner: "ackerman"
     project: vesktop
     targets:
-      - fedora-rawhide
-      - fedora-43
-      - fedora-42
+      - fedora-rawhide-x86_64
+      - fedora-43-x86_64
+      - fedora-42-x86_64
 
   - job: copr_build
     trigger: pull_request
     owner: "ackerman"
     project: vesktop
-    allowed_pr_authors:
-      - "@packit"
-      - "ackerman"
     targets:
-      - fedora-rawhide
+      - fedora-rawhide-x86_64
 
