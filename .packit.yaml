@@ -1,3 +1,5 @@
+# .packit.yaml
+
 specfile_path: vesktop.spec
 
 upstream_package_name: vesktop
@@ -5,23 +7,26 @@ downstream_package_name: vesktop
 
 sync_changelog: true
 
-srpm_build_deps:
-  - wget
+packages:
+  vesktop: # <-- Actions block MUST be defined under the package name
+    actions:
+      # Use the YAML literal block scalar (the pipe |) to execute a multi-line script as a single command.
+      post_upstream_clone: |
+        VERSION=$(grep -m1 '^Version:' vesktop.spec | awk '{print $2}');
+        echo "Detected version: $VERSION";
+        echo "Downloading tarball...";
+        # The wget command now points to the remote tarball source
+        wget -O vesktop-$VERSION.tar.gz \
+        https://github.com/Vencord/Vesktop/releases/download/v$VERSION/vesktop-$VERSION.tar.gz;
+        echo "Contents:";
+        ls -lh
 
-actions:
-  post_upstream_clone:
-    - >
-      VERSION=$(grep -m1 '^Version:' vesktop.spec | awk '{print $2}');
-      echo "Detected version: $VERSION";
-      echo "Downloading tarball...";
-      wget -O vesktop-$VERSION.tar.gz \
-      https://github.com/Vencord/Vesktop/releases/download/v$VERSION/vesktop-$VERSION.tar.gz;
-      echo "Contents:";
-      ls -lh
+srpm_build_deps:
+  - wget # Ensure wget is available for the script
 
 jobs:
   - job: copr_build
-    trigger: release
+    trigger: release # Automatic builds on upstream release
     owner: "ackerman"
     project: vesktop
     targets:
@@ -35,4 +40,3 @@ jobs:
     project: vesktop
     targets:
       - fedora-rawhide-x86_64
-
