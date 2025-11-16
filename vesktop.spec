@@ -9,8 +9,8 @@ License:        GPL-3.0-only AND MIT
 URL:            https://github.com/Vencord/Vesktop
 
 # Prefer upstream tarball as Source0; fallback to binary RPM in Source1.
-Source0:        https://github.com/Vencord/Vesktop/releases/download/%{version}/vesktop-%{version}.tar.gz
-Source1:        https://github.com/Vencord/Vesktop/releases/download/%{version}/vesktop-%{version}.x86_64.rpm
+Source0:        https://github.com/Vencord/Vesktop/releases/download/v%{version}/vesktop-%{version}.tar.gz
+Source1:        https://github.com/Vencord/Vesktop/releases/download/v%{version}/vesktop-%{version}.x86_64.rpm
 Source2:        %{name}.desktop
 
 BuildArch:      x86_64
@@ -33,7 +33,6 @@ designed for users who want enhanced performance, features, and deep customizati
 through the Vencord client mod.
 
 %prep
-# Working extraction dir
 rm -rf %{_tmppath}/vesktop-extract
 mkdir -p %{_tmppath}/vesktop-extract
 cd %{_tmppath}/vesktop-extract
@@ -59,7 +58,6 @@ else
   exit 1
 fi
 
-# Final verify
 if [ ! -d %{_tmppath}/vesktop-extract/extracted ]; then
   echo "ERROR: upstream payload not found (extracted directory missing)"
   exit 1
@@ -69,7 +67,6 @@ fi
 # No build steps required — using prebuilt artifacts.
 
 %install
-# Standard directories
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/applications
 mkdir -p %{buildroot}%{_datadir}/icons/hicolor/256x256/apps
@@ -128,7 +125,6 @@ else
   echo "GPL-3.0-only AND MIT - See https://github.com/Vencord/Vesktop for details" > %{buildroot}%{_datadir}/licenses/%{name}/LICENSE
 fi
 
-# Validate desktop file (non-fatal)
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop || echo "Warning: desktop-file-validate failed."
 
 %files
@@ -143,7 +139,6 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop || ec
 
 %changelog
 * Sun Nov 16 2025 Quietcraft <mdzunaid384@gmail.com> - 1.6.1-1
-- Fixed parsing issue by removing inline BuildRequires comments and normalized Source ordering.
 - Repackage upstream artifacts: support tarball and binary RPM payloads.
 - Install app under /opt/Vesktop, provide /usr/bin/vesktop wrapper.
 - Add robust icon and license handling and fail-fast checks.
