@@ -9,16 +9,15 @@ srpm_build_deps:
   - wget
 
 actions:
-  post-upstream-clone: |
-    VERSION=$(grep -m1 '^Version:' vesktop.spec | awk '{print $2}')
-    echo "Detected version: $VERSION"
-
-    echo "Downloading tarball..."
-    wget -O vesktop-$VERSION.tar.gz \
-      "https://github.com/Vencord/Vesktop/releases/download/v$VERSION/vesktop-$VERSION.tar.gz"
-
-    echo "Contents:"
-    ls -lh
+  post_upstream_clone:
+    - >
+      VERSION=$(grep -m1 '^Version:' vesktop.spec | awk '{print $2}');
+      echo "Detected version: $VERSION";
+      echo "Downloading tarball...";
+      wget -O vesktop-$VERSION.tar.gz \
+      https://github.com/Vencord/Vesktop/releases/download/v$VERSION/vesktop-$VERSION.tar.gz;
+      echo "Contents:";
+      ls -lh
 
 jobs:
   - job: copr_build
