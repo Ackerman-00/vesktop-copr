@@ -1,3 +1,4 @@
+# vesktop.spec - Repackage Vesktop upstream artifacts (tarball or binary RPM)
 %global debug_package %{nil}
 
 Name:           vesktop
